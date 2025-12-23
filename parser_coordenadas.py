@@ -29,58 +29,72 @@ def conversiongeo2cart(phi_grados: float, lam_grados: float, h: float = 0.0) -> 
 def dist2p(p1: np.ndarray, p2: np.ndarray) -> float:
     return np.linalg.norm(p2 - p1)
 
+def convertir_dd_mmssssss(valor: float) -> float:
+    """
+    Convierte coordenada en formato DD.MMssssss a grados decimales.
+    
+    Ejemplos:
+        19.192543   → 19 + 19/60 + 25.43/3600 ≈ 19.32373055°
+        -99.114174  → -(99 + 11/60 + 41.174/3600) ≈ -99.19477055°
+    """
+    # Manejar signo negativo
+    signo = -1 if valor < 0 else 1
+    valor_abs = abs(valor)
+    
+    # Separar parte entera (grados + minutos como decimal)
+    grados_enteros = int(valor_abs)                   # DD
+    minutos_decimal = valor_abs - grados_enteros      # .MMssssss
+    
+    # Convertir minutos_decimal a minutos y segundos
+    minutos = int(minutos_decimal * 100)              # MM (enteros)
+    segundos = (minutos_decimal * 100 - minutos) * 10000 / 100  # ssssss → segundos con decimal
+    
+    # Cálculo final
+    decimal = grados_enteros + minutos / 60.0 + segundos / 3600.0
+    
+    return signo * decimal
+
 def leer_datos_apoyo(ruta_archivo: str = "datos_apoyo.txt") -> pd.DataFrame:
-    """
-    Lee el archivo datos_apoyo.txt con coordenadas ya en grados decimales.
-    """
     df = pd.read_csv(
         ruta_archivo,
-        delimiter=r"\s*,\s*|\s+",      # separa por coma o espacios
+        delimiter=r"\s*,\s*|\s+",
         engine="python",
         comment='#',
         header=None,
         on_bad_lines='skip'
     )
     
-    # Nos quedamos con filas que tengan al menos 9 columnas
     df = df.dropna(thresh=9).reset_index(drop=True)
-    
-    # Convertimos todo a numérico directamente
     df = df.apply(pd.to_numeric, errors='coerce')
     
-    # Asignamos nombres de columnas
-    df.columns = ['lat1', 'lon1', 'h1', 'lat2', 'lon2', 'h2', 'distancia', 'punto1', 'punto2']
-    
-    # Convertimos códigos de punto a enteros (quitando posibles puntos)
+    df.columns = ['lat1_coded', 'lon1_coded', 'h1', 'lat2_coded', 'lon2_coded', 'h2', 'distancia', 'punto1', 'punto2']
     df['punto1'] = df['punto1'].astype('Int64')
     df['punto2'] = df['punto2'].astype('Int64')
     
-    # Eliminamos filas con coordenadas inválidas
-    df = df.dropna(subset=['lat1', 'lon1', 'lat2', 'lon2'])
+    df = df.dropna(subset=['lat1_coded', 'lon1_coded', 'lat2_coded', 'lon2_coded'])
     
     print(f"Archivo '{ruta_archivo}' cargado correctamente.")
     print(f"{len(df)} líneas de control válidas.")
     return df
 
 def procesar_control_geodesico(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Procesa el control con coordenadas ya en grados decimales.
-    """
-    # Usamos directamente las columnas lat1, lon1, etc. (ya son decimales)
+    # Convertir coordenadas codificadas a grados decimales
+    df['lat1'] = df['lat1_coded'].apply(convertir_dd_mmssssss)
+    df['lon1'] = df['lon1_coded'].apply(convertir_dd_mmssssss)
+    df['lat2'] = df['lat2_coded'].apply(convertir_dd_mmssssss)
+    df['lon2'] = df['lon2_coded'].apply(convertir_dd_mmssssss)
     
-    # Punto 1 → Cartesianas
+    # Convertir a ECEF
     df[['X1', 'Y1', 'Z1']] = df.apply(
         lambda r: conversiongeo2cart(r['lat1'], r['lon1'], r['h1']),
         axis=1, result_type='expand'
     )
-    
-    # Punto 2 → Cartesianas
     df[['X2', 'Y2', 'Z2']] = df.apply(
         lambda r: conversiongeo2cart(r['lat2'], r['lon2'], r['h2']),
         axis=1, result_type='expand'
     )
     
-    # Distancia calculada 3D
+    # Distancia calculada
     df['dist_calc'] = df.apply(
         lambda r: dist2p(np.array([r['X1'], r['Y1'], r['Z1']]),
                          np.array([r['X2'], r['Y2'], r['Z2']])), axis=1
@@ -94,7 +108,7 @@ def procesar_control_geodesico(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 # ================================
-# PRUEBA AL EJECUTAR EL ARCHIVO
+# EJECUCIÓN DIRECTA
 # ================================
 if __name__ == "__main__":
     df_raw = leer_datos_apoyo()
@@ -113,3 +127,8 @@ if __name__ == "__main__":
     print("\nDetalle de diferencias:")
     print(df[['punto1', 'punto2', 'distancia', 'dist_calc', 'dif_mm', 'dif_ppm']]
           .round({'distancia': 4, 'dist_calc': 4, 'dif_mm': 4, 'dif_ppm': 2}))
+    
+    # Opcional: mostrar coordenadas convertidas
+    print("\nEjemplo de conversión (primera línea):")
+    print(f"Lat1 codificada: {df_raw.iloc[0]['lat1_coded']} → {df.iloc[0]['lat1']:.8f}°")
+    print(f"Lon1 codificada: {df_raw.iloc[0]['lon1_coded']} → {df.iloc[0]['lon1']:.8f}°")
