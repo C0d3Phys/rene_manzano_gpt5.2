@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+    <name>Control Geodésico - Puntos</name>
+    <Style id="puntoStyle">
+        <IconStyle>
+            <color>ff00ff00</color>
+            <scale>1.2</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff00ff00</color>
+            <scale>1.5</scale>
+        </LabelStyle>
+    </Style>
+
+    <Placemark>
+        <name>Punto 3.0</name>
+        <description>
+            <![CDATA[
+            <b>Coordenadas codificadas:</b><br>
+            Lat: 19.183968<br>
+            Lon: -99.102248<br>
+            Altura: 2291.144 m<br><br>
+            <b>Convertidas a decimal:</b><br>
+            Lat: 19.31102222°<br>
+            Lon: -99.17291111°
+            ]]>
+        </description>
+        <styleUrl>#puntoStyle</styleUrl>
+        <Point>
+            <coordinates>-99.17291111,19.31102222,2291.144</coordinates>
+        </Point>
+    </Placemark>
+
+    <Placemark>
+        <name>Punto 4.0</name>
+        <description>
+            <![CDATA[
+            <b>Coordenadas codificadas:</b><br>
+            Lat: 19.183662<br>
+            Lon: -99.102946<br>
+            Altura: 2293.706 m<br><br>
+            <b>Convertidas a decimal:</b><br>
+            Lat: 19.31017222°<br>
+            Lon: -99.17485000°
+            ]]>
+        </description>
+        <styleUrl>#puntoStyle</styleUrl>
+        <Point>
+            <coordinates>-99.17485000,19.31017222,2293.706</coordinates>
+        </Point>
+    </Placemark>
+
+    <Placemark>
+        <name>Punto 8.0</name>
+        <description>
+            <![CDATA[
+            <b>Coordenadas codificadas:</b><br>
+            Lat: 19.192543<br>
+            Lon: -99.114174<br>
+            Altura: 2312.596 m<br><br>
+            <b>Convertidas a decimal:</b><br>
+            Lat: 19.32373056°<br>
+            Lon: -99.19492778°
+            ]]>
+        </description>
+        <styleUrl>#puntoStyle</styleUrl>
+        <Point>
+            <coordinates>-99.19492778,19.32373056,2312.596</coordinates>
+        </Point>
+    </Placemark>
+
+    <Placemark>
+        <name>Punto 9.0</name>
+        <description>
+            <![CDATA[
+            <b>Coordenadas codificadas:</b><br>
+            Lat: 19.193876<br>
+            Lon: -99.114137<br>
+            Altura: 2301.912 m<br><br>
+            <b>Convertidas a decimal:</b><br>
+            Lat: 19.32743333°<br>
+            Lon: -99.19482500°
+            ]]>
+        </description>
+        <styleUrl>#puntoStyle</styleUrl>
+        <Point>
+            <coordinates>-99.19482500,19.32743333,2301.912</coordinates>
+        </Point>
+    </Placemark>
+
+    <Placemark>
+        <name>Punto 10.0</name>
+        <description>
+            <![CDATA[
+            <b>Coordenadas codificadas:</b><br>
+            Lat: 19.201133<br>
+            Lon: -99.110804<br>
+            Altura: 2268.113 m<br><br>
+            <b>Convertidas a decimal:</b><br>
+            Lat: 19.33648056°<br>
+            Lon: -99.18556667°
+            ]]>
+        </description>
+        <styleUrl>#puntoStyle</styleUrl>
+        <Point>
+            <coordinates>-99.18556667,19.33648056,2268.113</coordinates>
+        </Point>
+    </Placemark>
+
+    <Placemark>
+        <name>Punto 11.0</name>
+        <description>
+            <![CDATA[
+            <b>Coordenadas codificadas:</b><br>
+            Lat: 19.200299<br>
+            Lon: -99.104345<br>
+            Altura: 2258.573 m<br><br>
+            <b>Convertidas a decimal:</b><br>
+            Lat: 19.33416389°<br>
+            Lon: -99.17873611°
+            ]]>
+        </description>
+        <styleUrl>#puntoStyle</styleUrl>
+        <Point>
+            <coordinates>-99.17873611,19.33416389,2258.573</coordinates>
+        </Point>
+    </Placemark>
+
+</Document>
+</kml>
