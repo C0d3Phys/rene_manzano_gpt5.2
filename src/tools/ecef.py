@@ -4,7 +4,7 @@ import math
 from dataclasses import dataclass
 
 from .ellipsoids import WGS84, Ellipsoid
-from .angles import grados2rad, rad2grados  # si no tienes rad2grados, usa math.degrees
+from .angles import grados2rad # si no tienes rad2grados, usa math.degrees
 
 
 def calc_N(phi_degrees: float, ell: Ellipsoid = WGS84) -> float:
