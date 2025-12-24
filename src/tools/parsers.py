@@ -20,6 +20,6 @@ def ddmmssss_to_deg(value: float) -> float:
     mmssss = (v - deg) * 100.0
 
     minutes = int(mmssss)
-    seconds = (mmssss - minutes) * 60.0
+    seconds = (mmssss - minutes) * 100.0
 
     return sign * (deg + minutes / 60.0 + seconds / 3600.0)
