@@ -1,6 +1,6 @@
-from src.io.support_reader import read_apoyo_file
-from src.pipelines.apoyo_geodesico import run_apoyo_pipeline
-from src.reporting.console import print_summary, print_detail
+from src.io.reader import read_apoyo_file
+from src.pipelines.core import run_apoyo_pipeline
+from src.reports.console import print_summary, print_detail
 
 def main():
     df_raw = read_apoyo_file("datos_apoyo.txt")
