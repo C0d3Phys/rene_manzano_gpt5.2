@@ -1,0 +1,79 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Compilados / extensiones
+*.pyd
+*.pyo
+*.so
+*.dll
+
+# =========================
+# Entornos virtuales
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# =========================
+# Cache / temporales
+# =========================
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# =========================
+# Windows
+# =========================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+desktop.ini
+
+$RECYCLE.BIN/
+*.lnk
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Archivos temporales
+# =========================
+*.tmp
+*.temp
+*.swp
+*.bak
+*~
+
+# =========================
+# Datos locales (opcional)
+# =========================
+*.csv
+*.dat
+*.txt
+
+# =========================
+# Archivos de sistema
+# =========================
+.DS_Store
