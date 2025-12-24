@@ -1,53 +1,85 @@
+# src/tools/angles.py
 import math
+from typing import Tuple
 
+
+# -------------------------------
+# Conversión grados <-> radianes
+# -------------------------------
+
+def deg_to_rad(deg: float) -> float:
+    """Convierte grados decimales a radianes."""
+    return math.radians(deg)
+
+def rad_to_deg(rad: float) -> float:
+    """Convierte radianes a grados decimales."""
+    return math.degrees(rad)
+
+# Alias para compatibilidad con tu código actual
 def grados2rad(angulo: float) -> float:
-    """
-    Convierte un ángulo de grados decimales a radianes.
-    
-    Esta función es esencial en cálculos geodésicos porque las funciones
-    trigonométricas de Python (math.sin, math.cos, math.tan, etc.) esperan
-    argumentos en radianes, mientras que las latitudes y longitudes suelen
-    manejarse en grados decimales (ej. 40.4168° para Madrid).
-    
-    Fórmula:
-        radianes = grados × π / 180
-    
-    Parámetros:
-        angulo (float): Ángulo en grados decimales.
-                        Rango típico para latitud: -90.0 a +90.0
-                        Rango típico para longitud: -180.0 a +180.0
-    
-    Retorna:
-        float: El ángulo equivalente en radianes.
-    
-    Ejemplos:
-        >>> grados2rad(0)
-        0.0
-        >>> grados2rad(90)
-        1.5707963267948966  # ≈ π/2
-        >>> grados2rad(45)
-        0.7853981633974483  # ≈ π/4
-        >>> grados2rad(180)
-        3.141592653589793   # ≈ π
-    
-    Nota:
-        Esta función es simple pero crítica para evitar errores comunes
-        en conversiones de coordenadas geográficas. Siempre úsala antes de
-        aplicar sin() o cos() a latitudes/longitudes en grados.
-    """
-    return angulo * math.pi / 180
+    """Alias de deg_to_rad para compatibilidad."""
+    return deg_to_rad(angulo)
 
-def gms2dec(grados: float, minutos: float = 0.0, segundos: float = 0.0) -> float:
+
+# -------------------------------
+# DMS/GMS <-> grados decimales
+# -------------------------------
+
+def dms_to_deg(deg: float, minute: float = 0.0, second: float = 0.0) -> float:
     """
-    Convierte GMS (grados, minutos, segundos) a grados decimales.
-    Maneja correctamente grados negativos (Sur/Oeste).
-    
+    Convierte DMS (Degrees, Minutes, Seconds) a grados decimales.
+    Maneja correctamente signos (Sur/Oeste negativos).
+
+    Reglas:
+      - El signo se toma únicamente del parámetro 'deg'.
+      - minute y second se usan en valor absoluto.
+
     Ejemplos:
-        gms2dec(40, 25, 46.8)      →  40.429666... (Norte/Este)
-        gms2dec(-33, 26, 45.9)     → -33.446083... (Sur/Oeste)
+        dms_to_deg(40, 25, 46.8)   ->  40.429666...
+        dms_to_deg(-33, 26, 45.9)  -> -33.446083...
     """
-    fraccion = abs(minutos) / 60.0 + abs(segundos) / 3600.0
-    if grados >= 0:
-        return grados + fraccion
-    else:
-        return grados - fraccion
+    frac = abs(minute) / 60.0 + abs(second) / 3600.0
+    return deg + frac if deg >= 0 else deg - frac
+
+# Alias con tu nombre original
+def gms2dec(grados: float, minutos: float = 0.0, segundos: float = 0.0) -> float:
+    """Alias de dms_to_deg para compatibilidad."""
+    return dms_to_deg(grados, minutos, segundos)
+
+
+def deg_to_dms(deg: float) -> Tuple[int, int, float]:
+    """
+    Convierte grados decimales a (D, M, S).
+    El signo se mantiene en D (grados).
+    """
+    sign = -1 if deg < 0 else 1
+    x = abs(deg)
+    d = int(x)
+    m_float = (x - d) * 60.0
+    m = int(m_float)
+    s = (m_float - m) * 60.0
+    return sign * d, m, s
+
+
+# -------------------------------
+# Normalización / wrapping
+# -------------------------------
+
+def wrap_pi(rad: float) -> float:
+    """Envuelve un ángulo en radianes a [-pi, pi)."""
+    return (rad + math.pi) % (2.0 * math.pi) - math.pi
+
+def wrap_2pi(rad: float) -> float:
+    """Envuelve un ángulo en radianes a [0, 2pi)."""
+    return rad % (2.0 * math.pi)
+
+def wrap_deg(deg: float) -> float:
+    """Envuelve un ángulo en grados a [-180, 180)."""
+    return (deg + 180.0) % 360.0 - 180.0
+
+def wrap_lon_deg(lon_deg: float) -> float:
+    """
+    Normaliza longitud en grados a [-180, 180).
+    (Alias semántico de wrap_deg para longitudes.)
+    """
+    return wrap_deg(lon_deg)
