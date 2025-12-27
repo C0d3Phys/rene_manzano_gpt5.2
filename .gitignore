@@ -72,6 +72,7 @@ $RECYCLE.BIN/
 *.csv
 *.dat
 *.txt
+*.kml
 
 # =========================
 # Archivos de sistema
