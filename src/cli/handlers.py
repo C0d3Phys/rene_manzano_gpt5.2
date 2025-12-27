@@ -9,7 +9,6 @@ from src.reports.qa import print_qa_resume
 from src.exports.kml import build_unique_points, write_kml_points
 from src.adjust.runner import run_adjustment
 
-
 def cmd_prepare(data_file: Path, out_dir: Path, model: str) -> int:
     out_dir.mkdir(exist_ok=True)
     out_file = out_dir / "resultados.csv"
@@ -46,5 +45,14 @@ def cmd_adjust(out_dir: Path, model: str) -> int:
         return 2
 
     df = pd.read_csv(out_file)
-    run_adjustment(df, model=model)
+
+    res = run_adjustment(df, model=model, verbose=True)
+    print("\nPuntos ajustados:")
+    print(res.points)
+
+    # Si quieres guardar resultados del ajuste:
+    out_dir = Path(out_dir)
+    res.points.to_csv(out_dir / "puntos_ajustados.csv", index=False, float_format="%.6f")
+    res.observations.to_csv(out_dir / "observaciones_ajustadas.csv", index=False, float_format="%.6f")
+
     return 0
