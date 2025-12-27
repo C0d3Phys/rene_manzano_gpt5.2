@@ -132,7 +132,7 @@ def main():
     df = run_apoyo_pipeline(df_raw)
 
     # (Si ya lo corriste dentro del pipeline, no lo repitas. En ese caso solo calcula stats rápido:)
-    _, stats = qa_columns(df, col_res_mm="dif_mm")
+    _, stats = qa_columns(df, col_res_mm="dif_mm_2d")
 
     print("\nQA resumen:")
     print(f"n={stats['n']} | mean={stats['mean_mm']:.3f} mm | std={stats['std_mm']:.3f} mm "
