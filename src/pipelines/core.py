@@ -4,6 +4,7 @@ import pandas as pd
 from src.tools.parsers import ddmmssss_to_deg
 from src.tools.ecef import geo_to_ecef_np
 from src.tools.geometry import distance_3d_np
+from src.pipelines.qa import qa_columns
 
 
 def decode_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -61,10 +62,11 @@ def compute_distances(df: pd.DataFrame) -> pd.DataFrame:
 
     return out
 
-
 def run_apoyo_pipeline(df_raw: pd.DataFrame) -> pd.DataFrame:
     """Orquestador: aplica el pipeline completo."""
     df1 = decode_columns(df_raw)
     df2 = ecef_columns(df1)
     df3 = compute_distances(df2)
-    return df3
+
+    df4, _stats = qa_columns(df3)   # si quieres, devuelve stats
+    return df4

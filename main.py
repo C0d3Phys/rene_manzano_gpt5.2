@@ -4,6 +4,7 @@ import pandas as pd
 from src.io.reader import read_apoyo_file
 from src.pipelines.core import run_apoyo_pipeline
 from src.reports.console import print_summary, print_detail
+from src.pipelines.qa import qa_columns
 
 def _first_existing_col(df: pd.DataFrame, candidates: list[str]) -> str | None:
     for c in candidates:
@@ -129,6 +130,13 @@ def main():
     # Leer + pipeline
     df_raw = read_apoyo_file(str(data_file))
     df = run_apoyo_pipeline(df_raw)
+
+    # (Si ya lo corriste dentro del pipeline, no lo repitas. En ese caso solo calcula stats rápido:)
+    _, stats = qa_columns(df, col_res_mm="dif_mm")
+
+    print("\nQA resumen:")
+    print(f"n={stats['n']} | mean={stats['mean_mm']:.3f} mm | std={stats['std_mm']:.3f} mm "
+      f"| p95={stats['p95_mm']:.3f} mm | outliers={stats['count_outlier']}")
 
     # Reportes
     print_summary(df)
