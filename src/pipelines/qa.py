@@ -3,20 +3,18 @@ import pandas as pd
 
 def _nanmean(x): return float(np.nanmean(x))
 def _nanstd(x):  return float(np.nanstd(x, ddof=1))
-
 def _median(x):  return float(np.nanmedian(x))
 
 def _mad(x):
-    """
-    MAD = median(|x - median(x)|)
-    """
+    """MAD = median(|x - median(x)|)"""
     med = np.nanmedian(x)
     return float(np.nanmedian(np.abs(x - med)))
 
 def qa_columns(
     df: pd.DataFrame,
     col_res_mm: str = "dif_mm",
-    # Umbrales prácticos (ajústalos según tu control):
+    *,
+    suffix: str = "",   # <-- NUEVO: para no pisar columnas
     suspect_mm: float = 5.0,
     outlier_mm: float = 10.0,
     z_suspect: float = 3.0,
@@ -27,8 +25,14 @@ def qa_columns(
     """
     QA geodésico sobre residuos en mm.
     Devuelve (df_out, stats_dict).
+
+    Si suffix != "" crea columnas con sufijo, ej:
+      z_mm_3d, robust_z_mm_3d, is_outlier_3d, flag_qa_3d
     """
     out = df.copy()
+
+    if col_res_mm not in out.columns:
+        raise KeyError(f"No existe '{col_res_mm}'. Disponibles: {list(out.columns)}")
 
     v = out[col_res_mm].to_numpy(dtype=float)
 
@@ -43,21 +47,16 @@ def qa_columns(
     # Estadística robusta (MAD escalado)
     med = _median(v)
     mad = _mad(v)
-    # Escala: sigma_rob ≈ 1.4826 * MAD (asumiendo normal)
     sigma_rob = 1.4826 * mad if (np.isfinite(mad) and mad != 0.0) else np.nan
     if not np.isfinite(sigma_rob) or sigma_rob == 0.0:
         rz = np.full_like(v, np.nan, dtype=float)
     else:
         rz = (v - med) / sigma_rob
 
-    out["z_mm"] = z
-    out["robust_z_mm"] = rz
-
     abs_v = np.abs(v)
     abs_z = np.abs(z)
     abs_rz = np.abs(rz)
 
-    # Reglas de marcado (combinadas: magnitud mm + z)
     is_outlier = (
         (abs_v >= outlier_mm) |
         (abs_z >= z_outlier) |
@@ -75,11 +74,13 @@ def qa_columns(
 
     flag = np.where(is_outlier, "OUTLIER", np.where(is_suspect, "SUSPECT", "OK"))
 
-    out["is_outlier"] = is_outlier
-    out["is_suspect"] = is_suspect
-    out["flag_qa"] = flag
+    suf = f"_{suffix}" if suffix else ""
+    out[f"z_mm{suf}"] = z
+    out[f"robust_z_mm{suf}"] = rz
+    out[f"is_outlier{suf}"] = is_outlier
+    out[f"is_suspect{suf}"] = is_suspect
+    out[f"flag_qa{suf}"] = flag
 
-    # Resumen global útil para impresión o log
     stats = {
         "n": int(np.isfinite(v).sum()),
         "mean_mm": mu,
