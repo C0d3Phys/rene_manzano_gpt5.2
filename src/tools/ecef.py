@@ -2,6 +2,7 @@
 #from __future__ import annotations
 import math
 from dataclasses import dataclass
+import numpy as np
 
 from .ellipsoids import WGS84, Ellipsoid
 from .angles import grados2rad # si no tienes rad2grados, usa math.degrees
@@ -39,6 +40,32 @@ def geo_to_ecef(lat_deg: float, lon_deg: float, h: float, ell: Ellipsoid = WGS84
     Y = (N + h) * cos_lat * sin_lon
     Z = (N * (1.0 - e2) + h) * sin_lat
 
+    return X, Y, Z
+
+def geo_to_ecef_np(lat_deg, lon_deg, h=0.0, ell: Ellipsoid = WGS84):
+    """
+    Vectorizado: (lat, lon, h) -> (X, Y, Z) ECEF
+    - lat_deg, lon_deg, h pueden ser float, list, np.ndarray, pandas.Series.
+    - Devuelve np.ndarray para X, Y, Z (broadcasting incluido).
+    """
+    lat = np.deg2rad(np.asarray(lat_deg, dtype=float))
+    lon = np.deg2rad(np.asarray(lon_deg, dtype=float))
+    h   = np.asarray(h, dtype=float)
+
+    a  = float(ell.a)
+    e2 = float(ell.e2)
+
+    sin_lat = np.sin(lat)
+    cos_lat = np.cos(lat)
+    sin_lon = np.sin(lon)
+    cos_lon = np.cos(lon)
+
+    # Radio de curvatura del primer vertical
+    N = a / np.sqrt(1.0 - e2 * sin_lat * sin_lat)
+
+    X = (N + h) * cos_lat * cos_lon
+    Y = (N + h) * cos_lat * sin_lon
+    Z = (N * (1.0 - e2) + h) * sin_lat
     return X, Y, Z
 
 
