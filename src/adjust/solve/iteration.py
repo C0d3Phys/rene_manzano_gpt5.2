@@ -1,9 +1,9 @@
 from __future__ import annotations
 import numpy as np
 
-from src.adjust.constraints import inner_constraints_B
-from src.adjust.observation import assemble_A_mis
-from src.adjust.lin_solve import solve_constrained
+from .constraints import inner_constraints_B
+from src.adjust.prepare.observation import assemble_A_mis
+from .lin_solve import solve_constrained
 
 
 def gauss_newton_loop(

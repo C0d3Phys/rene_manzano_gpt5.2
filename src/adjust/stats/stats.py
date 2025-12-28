@@ -2,10 +2,10 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from src.adjust.constraints import inner_constraints_B
-from src.adjust.observation import assemble_A_mis
-from src.adjust.lin_solve import solve_constrained
-from src.adjust.model import AdjustmentResult
+from src.adjust.solve.constraints import inner_constraints_B
+from src.adjust.prepare.observation import assemble_A_mis
+from src.adjust.solve.lin_solve import solve_constrained
+from src.adjust.prepare.model import AdjustmentResult
 
 
 def finalize_solution(

@@ -1,9 +1,9 @@
 from __future__ import annotations
 import pandas as pd
 
-from src.adjust.model import AdjustmentResult, build_index
-from src.adjust.iteration import gauss_newton_loop
-from src.adjust.stats import finalize_solution
+from src.adjust.prepare.model import AdjustmentResult, build_index
+from src.adjust.solve.iteration import gauss_newton_loop
+from src.adjust.stats.stats import finalize_solution
 
 
 def adjust_distances_free_network(

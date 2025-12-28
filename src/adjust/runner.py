@@ -1,8 +1,8 @@
 import pandas as pd
 
-from src.adjust.model import extract_adjustment_data, AdjustmentResult
-from src.adjust.weights import weights_from_distance
-from src.adjust.solver import adjust_distances_free_network
+from src.adjust.prepare.model import extract_adjustment_data, AdjustmentResult
+from src.adjust.prepare.weights import weights_from_distance
+from src.adjust.solve.solver import adjust_distances_free_network
 
 
 def run_adjustment(
